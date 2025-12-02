@@ -645,15 +645,15 @@
 
     <script>
         const typeData = [
-            { name: '騎士タイプ', description: '正しさを求める', icon: '⚔️' },
-            { name: '神様タイプ', description: '愛を求める', icon: '👼' },
-            { name: '探検家タイプ', description: '成果を求める', icon: '🔍' },
-            { name: '魔法使いタイプ', description: '個性を求める', icon: '🪄' },
-            { name: '博士タイプ', description: '能力を求める', icon: '🔬' },
-            { name: '探偵タイプ', description: '安全を求める', icon: '🔎' },
-            { name: '妖精タイプ', description: '楽しさを求める', icon: '🧚' },
-            { name: '戦士タイプ', description: '強さを求める', icon: '💪' },
-            { name: '僧侶タイプ', description: '平和を求める', icon: '🧘' }
+            { name: '騎士タイプ', description: '正しさを求める', icon: '⚔️', image: '1.png' },
+            { name: '神様タイプ', description: '愛を求める', icon: '👼', image: '2.png' },
+            { name: '探検家タイプ', description: '成果を求める', icon: '🔍', image: '3.png' },
+            { name: '魔法使いタイプ', description: '個性を求める', icon: '🪄', image: '4.png' },
+            { name: '博士タイプ', description: '能力を求める', icon: '🔬', image: '5.png' },
+            { name: '探偵タイプ', description: '安全を求める', icon: '🔎', image: '6.png' },
+            { name: '妖精タイプ', description: '楽しさを求める', icon: '🧚', image: '7.png' },
+            { name: '戦士タイプ', description: '強さを求める', icon: '💪', image: '8.png' },
+            { name: '僧侶タイプ', description: '平和を求める', icon: '🧘', image: '9.png' }
         ];
 
         let currentSection = 1;
@@ -754,7 +754,7 @@
                 const type = typeData[topTypes[0].type];
                 html = `
                     <div class="result-type">
-                        <div style="font-size: 48px; margin-bottom: 15px;">${type.icon}</div>
+                        <img src="${type.image}" alt="${type.name}" style="width: 80%; max-width: 300px; margin: 1rem auto; display: block; border-radius: 50%; object-fit: cover;">
                         <div class="result-type-name">${type.description}</div>
                         <div class="result-type-main">${type.name}</div>
                     </div>
@@ -770,7 +770,7 @@
                     const type = typeData[t.type];
                     html += `
                         <div class="result-type">
-                            <div style="font-size: 40px; margin-bottom: 10px;">${type.icon}</div>
+                            <img src="${type.image}" alt="${type.name}" style="width: 80%; max-width: 250px; margin: 1rem auto; display: block; border-radius: 50%; object-fit: cover;">
                             <div class="result-type-name">${type.description}</div>
                             <div class="result-type-main">${type.name}</div>
                         </div>
