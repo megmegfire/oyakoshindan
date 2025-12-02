@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>性格タイプ診断</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Hiragino Maru Gothic ProN", "ヒラギノ丸ゴ ProN", "メイリオ", Meiryo, sans-serif;
+            background: linear-gradient(135deg, #f5e2e2 0%, #ebcfd1 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px 20px;
+            box-shadow: 0 8px 30px rgba(209, 169, 174, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #d1a9ae;
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .start-screen {
+            text-align: center;
+        }
+
+        .start-description {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .start-button {
+            background: linear-gradient(135deg, #d1a9ae 0%, #ebcfd1 100%);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(209, 169, 174, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(209, 169, 174, 0.5);
+        }
+
+        .start-button:active {
+            transform: translateY(0);
+        }
+
+        .quiz-screen {
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #f5e2e2;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #d1a9ae 0%, #ebcfd1 100%);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .section-indicator {
+            text-align: center;
+            color: #d1a9ae;
+            font-size: 16px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .type-section {
+            background: #fafafa;
+            padding: 25px 20px;
+            border-radius: 15px;
+            border: 2px solid #f5e2e2;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: #d1a9ae;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ebcfd1;
+        }
+
+        .question-item {
+            margin-bottom: 12px;
+        }
+
+        .question-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            transition: background 0.2s;
+        }
+
+        .checkbox-wrapper:hover {
+            background: #fff;
+        }
+
+        input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: #d1a9ae;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .question-text {
+            font-size: 15px;
+            color: #333;
+            flex: 1;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .next-button, .prev-button, .submit-button {
+            flex: 1;
+            background: linear-gradient(135deg, #d1a9ae 0%, #ebcfd1 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(209, 169, 174, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .prev-button {
+            background: white;
+            color: #d1a9ae;
+            border: 2px solid #d1a9ae;
+            box-shadow: none;
+        }
+
+        .next-button:hover, .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(209, 169, 174, 0.5);
+        }
+
+        .prev-button:hover {
+            background: #d1a9ae;
+            color: white;
+        }
+
+        .next-button:active, .prev-button:active, .submit-button:active {
+            transform: translateY(0);
+        }
+
+        .result-screen {
+            display: none;
+        }
+
+        .result-title {
+            text-align: center;
+            color: #d1a9ae;
+            font-size: 20px;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .result-type {
+            background: linear-gradient(135deg, #f5e2e2 0%, #ebcfd1 50%, #f5e2e2 100%);
+            padding: 25px 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .result-type-name {
+            font-size: 18px;
+            color: #d1a9ae;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .result-type-main {
+            font-size: 26px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .result-message {
+            text-align: center;
+            color: #666;
+            font-size: 15px;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        .retry-button {
+            width: 100%;
+            background: white;
+            color: #d1a9ae;
+            border: 2px solid #d1a9ae;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .retry-button:hover {
+            background: #d1a9ae;
+            color: white;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 15px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .section-title {
+                font-size: 16px;
+            }
+
+            .question-text {
+                font-size: 14px;
+            }
+
+            .next-button, .prev-button, .submit-button {
+                font-size: 16px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- スタート画面 -->
+        <div class="start-screen" id="startScreen">
+            <h1>性格タイプ診断</h1>
+            <p class="subtitle">あなたはどのタイプ?</p>
+            <p class="start-description">
+                45個の質問に答えることで、あなたの性格タイプがわかります。<br>
+                当てはまるものにチェックを入れて、診断してみましょう!
+            </p>
+            <button class="start-button" onclick="startQuiz()">診断スタート</button>
+        </div>
+
+        <!-- 診断画面 -->
+        <div class="quiz-screen" id="quizScreen">
+            <h1>性格タイプ診断</h1>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p class="section-indicator" id="sectionIndicator">セクション 1 / 9</p>
+
+            <!-- セクション1 -->
+            <div class="type-section section-page" id="section1">
+                <div class="section-title">セクション1</div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type1" value="1">
+                        <span class="question-text">やるならキチンとやりたい</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type1" value="1">
+                        <span class="question-text">ズルをする人は許せない</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type1" value="1">
+                        <span class="question-text">先生や親の言うことは、聞いておいたほうがいい</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type1" value="1">
+                        <span class="question-text">散らかっているとキチンとしたくなる</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type1" value="1">
+                        <span class="question-text">初めてのお友達と話す時ちょっとドキドキ</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- セクション2 -->
+            <div class="type-section section-page hidden" id="section2">
+                <div class="section-title">セクション2</div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type2" value="1">
+                        <span class="question-text">気配り上手で、相手の気持ちを考えられる</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type2" value="1">
+                        <span class="question-text">小さな子供や動物のお世話をよくする</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type2" value="1">
+                        <span class="question-text">家族やお友達を大切にする</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type2" value="1">
+                        <span class="question-text">初めましてのお友達でも楽しく遊ぶことができる</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type2" value="1">
+                        <span class="question-text">自分が優しくしてあげたことに、気づいてもらえないと嫌な気持ちになる</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- セクション3 -->
+            <div class="type-section section-page hidden" id="section3">
+                <div class="section-title">セクション3</div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type3" value="1">
+                        <span class="question-text">目標に向かって計画をたてる</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type3" value="1">
+                        <span class="question-text">ハキハキしていて、色々な役わりに立候補する</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type3" value="1">
+                        <span class="question-text">勉強も遊びも友人関係もよくするために努力している</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type3" value="1">
+                        <span class="question-text">うまくいかないそうだな、と思うと勇気がでない</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type3" value="1">
+                        <span class="question-text">少し叱られただけでも、すごく落ち込む</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- セクション4 -->
+            <div class="type-section section-page hidden" id="section4">
+                <div class="section-title">セクション4</div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type5" value="1">
+                        <span class="question-text">みんなと同じなのはなんだかつまらない</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type5" value="1">
+                        <span class="question-text">人の気持ちにびんかん</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type5" value="1">
+                        <span class="question-text">絵をかいたり、音楽をきいたり、芸術的なことが好き</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type5" value="1">
+                        <span class="question-text">お友達や兄弟にヤキモチを妬くことが多い</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type5" value="1">
+                        <span class="question-text">そんなつもりはないけど「変わってるね」って言われることが多い</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- セクション5 -->
+            <div class="type-section section-page hidden" id="section5">
+                <div class="section-title">セクション5</div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type4" value="1">
+                        <span class="question-text">ひとつのことに夢中になりずーっとやっている</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type4" value="1">
+                        <span class="question-text">お友達と遊ぶより、一人で好きなことをしたい</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type4" value="1">
+                        <span class="question-text">大勢でわいわいするのはつかれてしまう</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type4" value="1">
+                        <span class="question-text">おしゃべりはちょっと苦手</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type4" value="1">
+                        <span class="question-text">思っていることがあっても言わないでおく</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- セクション6 -->
+            <div class="type-section section-page hidden" id="section6">
+                <div class="section-title">セクション6</div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type6" value="1">
+                        <span class="question-text">真面目でおとなしく人の言うことをよく聞く</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type6" value="1">
+                        <span class="question-text">嫌われるのがこわくて言いたいことが言えない</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type6" value="1">
+                        <span class="question-text">「どう思う?」とお友達や周りの人によく聞く</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type6" value="1">
+                        <span class="question-text">根気があってコツコツ取り組む</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type6" value="1">
+                        <span class="question-text">やりたいことがあってもこわくてなかなか一歩が踏み出せない</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- セクション7 -->
+            <div class="type-section section-page hidden" id="section7">
+                <div class="section-title">セクション7</div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type7" value="1">
+                        <span class="question-text">ちょっとのことでは落ちこまない</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type7" value="1">
+                        <span class="question-text">ワクワクすることが大好き</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type7" value="1">
+                        <span class="question-text">せっかく始めたことでもすぐに飽きてしまう</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type7" value="1">
+                        <span class="question-text">宿題やお片付けなど「やりなさい!」と注意されることが多い</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type7" value="1">
+                        <span class="question-text">じっとしていられない。ひとつのことに集中するのはつまらない</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- セクション8 -->
+            <div class="type-section section-page hidden" id="section8">
+                <div class="section-title">セクション8</div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type8" value="1">
+                        <span class="question-text">自分の意見や考えを持っていて、それを伝えることができる</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type8" value="1">
+                        <span class="question-text">つい強く言ってしまったりして、ケンカしてしまう</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type8" value="1">
+                        <span class="question-text">誰かから言われたことではなく、自分で決めてやってみたい</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type8" value="1">
+                        <span class="question-text">年上の人や大人相手でも、間違っていることがあれば注意する</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type8" value="1">
+                        <span class="question-text">誰にも負けたくないから、強くならなくちゃ!と思う</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- セクション9 -->
+            <div class="type-section section-page hidden" id="section9">
+                <div class="section-title">セクション9</div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type9" value="1">
+                        <span class="question-text">おだやかでのんびりしている</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type9" value="1">
+                        <span class="question-text">「急いで!」、「早く」といわれるとつらくなる</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type9" value="1">
+                        <span class="question-text">今のままが安心できる、計画は立てなくてもいい</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type9" value="1">
+                        <span class="question-text">キライな人はいない、もしくはほとんどいない</span>
+                    </label>
+                </div>
+                <div class="question-item">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="type9" value="1">
+                        <span class="question-text">あまりケンカをしないし、怒ったりもしない</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="prev-button hidden" id="prevButton" onclick="prevSection()">戻る</button>
+                <button class="next-button" id="nextButton" onclick="nextSection()">次へ</button>
+                <button class="submit-button hidden" id="submitButton" onclick="submitQuiz()">診断結果を見る</button>
+            </div>
+        </div>
+
+        <!-- 結果画面 -->
+        <div class="result-screen" id="resultScreen">
+            <h1>診断結果</h1>
+            <p class="subtitle">あなたのタイプは...</p>
+            <div id="resultContent"></div>
+            <button class="retry-button" onclick="retryQuiz()">もう一度診断する</button>
+        </div>
+    </div>
+
+    <script>
+        const typeData = [
+            { name: '騎士タイプ', description: '正しさを求める', icon: '⚔️' },
+            { name: '神様タイプ', description: '愛を求める', icon: '👼' },
+            { name: '探検家タイプ', description: '成果を求める', icon: '🔍' },
+            { name: '魔法使いタイプ', description: '個性を求める', icon: '🪄' },
+            { name: '博士タイプ', description: '能力を求める', icon: '🔬' },
+            { name: '探偵タイプ', description: '安全を求める', icon: '🔎' },
+            { name: '妖精タイプ', description: '楽しさを求める', icon: '🧚' },
+            { name: '戦士タイプ', description: '強さを求める', icon: '💪' },
+            { name: '僧侶タイプ', description: '平和を求める', icon: '🧘' }
+        ];
+
+        let currentSection = 1;
+        const totalSections = 9;
+
+        function startQuiz() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('quizScreen').style.display = 'block';
+            currentSection = 1;
+            updateSection();
+            window.scrollTo(0, 0);
+        }
+
+        function updateSection() {
+            // すべてのセクションを非表示
+            document.querySelectorAll('.section-page').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // 現在のセクションを表示
+            document.getElementById('section' + currentSection).classList.remove('hidden');
+
+            // プログレスバーを更新
+            const progress = (currentSection / totalSections) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            // セクション表示を更新
+            document.getElementById('sectionIndicator').textContent = `セクション ${currentSection} / ${totalSections}`;
+
+            // ボタンの表示切替
+            const prevButton = document.getElementById('prevButton');
+            const nextButton = document.getElementById('nextButton');
+            const submitButton = document.getElementById('submitButton');
+
+            if (currentSection === 1) {
+                prevButton.classList.add('hidden');
+            } else {
+                prevButton.classList.remove('hidden');
+            }
+
+            if (currentSection === totalSections) {
+                nextButton.classList.add('hidden');
+                submitButton.classList.remove('hidden');
+            } else {
+                nextButton.classList.remove('hidden');
+                submitButton.classList.add('hidden');
+            }
+
+            window.scrollTo(0, 0);
+        }
+
+        function nextSection() {
+            if (currentSection < totalSections) {
+                currentSection++;
+                updateSection();
+            }
+        }
+
+        function prevSection() {
+            if (currentSection > 1) {
+                currentSection--;
+                updateSection();
+            }
+        }
+
+        function submitQuiz() {
+            // 各タイプのチェック数を集計
+            const scores = [];
+            for (let i = 1; i <= 9; i++) {
+                const checkboxes = document.querySelectorAll(`input[name="type${i}"]:checked`);
+                scores.push({
+                    type: i - 1,
+                    score: checkboxes.length
+                });
+            }
+
+            // 最高スコアを取得
+            const maxScore = Math.max(...scores.map(s => s.score));
+
+            // 最高スコアのタイプをすべて取得
+            const topTypes = scores.filter(s => s.score === maxScore && s.score > 0);
+
+            if (topTypes.length === 0) {
+                alert('少なくとも1つはチェックを入れてください');
+                return;
+            }
+
+            // 結果を表示
+            displayResult(topTypes, maxScore);
+        }
+
+        function displayResult(topTypes, maxScore) {
+            const resultContent = document.getElementById('resultContent');
+            let html = '';
+
+            if (topTypes.length === 1) {
+                // 1つのタイプの場合
+                const type = typeData[topTypes[0].type];
+                html = `
+                    <div class="result-type">
+                        <div style="font-size: 48px; margin-bottom: 15px;">${type.icon}</div>
+                        <div class="result-type-name">${type.description}</div>
+                        <div class="result-type-main">${type.name}</div>
+                    </div>
+                    <p class="result-message">
+                        あなたは「${type.name}」の特徴が強く表れています!<br>
+                        ${maxScore}個の項目に当てはまりました。
+                    </p>
+                `;
+            } else {
+                // 複数のタイプの場合
+                html = '<p class="result-message">あなたは複数のタイプの特徴を持っています!</p>';
+                topTypes.forEach(t => {
+                    const type = typeData[t.type];
+                    html += `
+                        <div class="result-type">
+                            <div style="font-size: 40px; margin-bottom: 10px;">${type.icon}</div>
+                            <div class="result-type-name">${type.description}</div>
+                            <div class="result-type-main">${type.name}</div>
+                        </div>
+                    `;
+                });
+                html += `<p class="result-message">それぞれ${maxScore}個の項目に当てはまりました。</p>`;
+            }
+
+            resultContent.innerHTML = html;
+            document.getElementById('quizScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        function retryQuiz() {
+            // チェックボックスをすべて外す
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+            });
+
+            // スタート画面に戻る
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('startScreen').style.display = 'block';
+            currentSection = 1;
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
