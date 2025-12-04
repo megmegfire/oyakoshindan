@@ -216,7 +216,8 @@
         }
 
         .result-type {
-            background: linear-gradient(135deg, #f5e2e2 0%, #ebcfd1 50%, #f5e2e2 100%);
+            background: white;
+            border: 3px solid #ebcfd1;
             padding: 25px 20px;
             border-radius: 15px;
             margin-bottom: 20px;
@@ -227,7 +228,7 @@
             font-size: 18px;
             color: #d1a9ae;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
 
         .result-type-main {
@@ -298,9 +299,9 @@
             <h1>おやこグラム診断</h1>
             <p class="subtitle">お子さんはどのタイプの傾向が強め?</p>
             <p class="start-description">
-                全部9セクションの質問に答えることで、お子さんのタイプ傾向がわかります。<br>
+                全9セクションの質問に答えることで、お子さんのタイプ傾向がわかります。<br>
                 <strong>各セクションの5項目のうち、当てはまるものに全てチェックを入れてください。</strong><br>
-                (複数選択可能です)
+                (複数選択可能、当てはまらない場合はチェックをそのまま「次へ」をタップ)
             </p>
             <button class="start-button" onclick="startQuiz()">診断スタート</button>
         </div>
@@ -407,7 +408,7 @@
                 <div class="question-item">
                     <label class="checkbox-wrapper">
                         <input type="checkbox" name="type3" value="1">
-                        <span class="question-text">うまくいかないそうだな、と思うと勇気がでない</span>
+                        <span class="question-text">うまくいかなそうだな、と思うと勇気が出ない</span>
                     </label>
                 </div>
                 <div class="question-item">
@@ -653,7 +654,7 @@
             { name: '博士タイプ', description: '能力を求める', icon: '🔬', image: '5.png' },
             { name: '探偵タイプ', description: '安全を求める', icon: '🔎', image: '6.png' },
             { name: '妖精タイプ', description: '楽しさを求める', icon: '🧚', image: '7.png' },
-            { name: '王様タイプ', description: '強さを求める', icon: '💪', image: '8.png' },
+            { name: '戦士タイプ', description: '強さを求める', icon: '💪', image: '8.png' },
             { name: '僧侶タイプ', description: '平和を求める', icon: '🧘', image: '9.png' }
         ];
 
@@ -755,7 +756,7 @@
                 const type = typeData[topTypes[0].type];
                 html = `
                     <div class="result-type">
-                        <img src="${type.image}" alt="${type.name}" style="width: 80%; max-width: 300px; margin: 1rem auto; display: block;">
+                        <img src="${type.image}" alt="${type.name}" style="width: 90%; max-width: 400px; margin: 1rem auto; display: block;">
                         <div class="result-type-name">${type.description}</div>
                         <div class="result-type-main">${type.name}</div>
                     </div>
@@ -772,7 +773,7 @@
                     const type = typeData[t.type];
                     html += `
                         <div class="result-type">
-                            <img src="${type.image}" alt="${type.name}" style="width: 80%; max-width: 250px; margin: 1rem auto; display: block;">
+                            <img src="${type.image}" alt="${type.name}" style="width: 90%; max-width: 350px; margin: 1rem auto; display: block;">
                             <div class="result-type-name">${type.description}</div>
                             <div class="result-type-main">${type.name}</div>
                         </div>
