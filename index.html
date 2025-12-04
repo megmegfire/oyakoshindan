@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>性格タイプ診断</title>
+    <title>おやこグラム診断</title>
     <style>
         * {
             margin: 0;
@@ -295,18 +295,18 @@
     <div class="container">
         <!-- スタート画面 -->
         <div class="start-screen" id="startScreen">
-            <h1>性格タイプ診断</h1>
-            <p class="subtitle">あなたはどのタイプ?</p>
+            <h1>おやこグラム診断</h1>
+            <p class="subtitle">お子さんはどのタイプの傾向が強め?</p>
             <p class="start-description">
-                45個の質問に答えることで、あなたの性格タイプがわかります。<br>
-                当てはまるものにチェックを入れて、診断してみましょう!
-            </p>
+                全部9セクションの質問に答えることで、お子さんのタイプ傾向がわかります。<br>
+                <strong>各セクションの5項目のうち、当てはまるものに全てチェックを入れてください。</strong><br>
+                (複数選択可能です)<n            </p>
             <button class="start-button" onclick="startQuiz()">診断スタート</button>
         </div>
 
         <!-- 診断画面 -->
         <div class="quiz-screen" id="quizScreen">
-            <h1>性格タイプ診断</h1>
+            <h1>おやこグラム診断</h1>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
@@ -759,13 +759,14 @@
                         <div class="result-type-main">${type.name}</div>
                     </div>
                     <p class="result-message">
-                        あなたは「${type.name}」の特徴が強く表れています!<br>
-                        ${maxScore}個の項目に当てはまりました。
+                        お子さんは「${type.name}」の傾向が強めです!<br>
+                        ${maxScore}個の項目に当てはまりました。<br>
+                        <small style="color: #999; font-size: 13px; margin-top: 10px; display: block;">※こちらは簡易的な診断結果です。あくまで傾向としてご参考ください。</small>
                     </p>
                 `;
             } else {
                 // 複数のタイプの場合
-                html = '<p class="result-message">あなたは複数のタイプの特徴を持っています!</p>';
+                html = '<p class="result-message">お子さんは複数のタイプの傾向を持っています!</p>';
                 topTypes.forEach(t => {
                     const type = typeData[t.type];
                     html += `
@@ -776,7 +777,7 @@
                         </div>
                     `;
                 });
-                html += `<p class="result-message">それぞれ${maxScore}個の項目に当てはまりました。</p>`;
+                html += `<p class="result-message">それぞれ${maxScore}個の項目に当てはまりました。<br><small style="color: #999; font-size: 13px; margin-top: 10px; display: block;">※こちらは簡易的な診断結果です。あくまで傾向としてご参考ください。</small></p>`;
             }
 
             resultContent.innerHTML = html;
